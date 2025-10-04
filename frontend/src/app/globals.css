@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+@theme {
+  --width-page: 80%;
+  --width-page-opened: 90%;
+  --width-side-desktop: 20%;
+  --width-side-hidden: 10%;
+}
