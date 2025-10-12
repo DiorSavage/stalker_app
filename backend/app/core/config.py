@@ -9,12 +9,21 @@ class AuthSettings(BaseModel):
 	algorithm: str = "RS256"
 	token_expire: int = 15 * 60 * 60 * 24
 
+class RedisSettings(BaseModel):
+	REDIS_HOST: str = "redis"
+	REDIS_PORT: int = 6379
+	REDIS_PROTOCOL: int = 3
+	REDIS_DECODE_RESPONSES: bool = True
+	REDIS_DB: int = 0
+	CACHE_EXPIRATION_MIN: int = 5
+
 class Settings(BaseModel):
 	DB_URL: str = "postgresql+asyncpg://postgres:postgres@db:5432/stalkappdb"
-	# DB_URL: str = "postgresql+asyncpg://postgres:archblack@0.0.0.0:5432/stalkappdb"
+	# DB_URL: str = "postgresql+asyncpg://postgres:postgres@0.0.0.0:5432/stalkappdb"
 	DB_ECHO: bool = True
-	UPLOAD_DIR: str = "/stalk_app/uploads"
+	UPLOAD_DIR: str = "/stalk_app/uploads/"
 
 	auth_settings: AuthSettings = AuthSettings()
+	redis_settings: RedisSettings = RedisSettings()
 
 settings = Settings()

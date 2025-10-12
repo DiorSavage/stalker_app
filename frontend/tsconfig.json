@@ -22,9 +22,9 @@
       "@/*": ["./src/*"],
       "@lib/*": ["./src/lib/*"],
       "@providers/*": ["./src/providers/*"],
-      "@components/*": ["./src/app/_components/*"]
-    }
+      "@components/*": ["./src/app/_components/*"],
+    },
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
 }

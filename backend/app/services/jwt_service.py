@@ -1,6 +1,6 @@
 import jwt
 from core.config import settings
-from datetime import datetime, timezone, UTC
+from datetime import datetime, timezone, UTC, timedelta
 import bcrypt
 
 class JwtService:
@@ -17,11 +17,11 @@ class JwtService:
 
 	def encode_jwt(self, payload: dict, private_key: str = settings.auth_settings.private_key_path.read_text(), algorithm: str = settings.auth_settings.algorithm):
 		to_encode = payload.copy()
-		expire = datetime.now().timestamp() + settings.auth_settings.token_expire
+		expire = datetime.now(timezone.utc) + timedelta(seconds=self.token_expire)
 		iat = datetime.now().timestamp()
 
 		to_encode.update(
-			exp=expire,
+			exp=expire.timestamp(),
 			iat=iat
 		)
 

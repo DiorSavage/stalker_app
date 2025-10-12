@@ -1,0 +1,87 @@
+services:
+  db:
+    image: postgres:latest
+    container_name: local_stalk_app_postgres
+    hostname: db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=stalkappdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - "./pgdata:/var/lib/postgresql/data"
+    restart: always
+    networks:
+      - backend
+
+  redis:
+    container_name: local_stalk_app_redis
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    depends_on:
+      - db
+    networks:
+      - backend
+
+  rabbitmq:
+    image: rabbitmq:4.1.0-management
+    hostname: rabbitmq
+    container_name: local_stalk_app_rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    networks:
+      - backend
+
+  backend:
+    build:
+      context: ./docker/backend
+    command: bash -c "alembic upgrade head && python ./app/main.py"
+    container_name: local_stalk_app_backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - "./backend:/stalk_app/backend"
+    depends_on:
+      db:
+        condition: service_started
+      redis:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - backend
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        BUILD_MODE: local
+    container_name: local_stalk_app_frontend
+    volumes:
+      - "./frontend:/stalk_front/frontend"
+    ports:
+      - "3000:3000"
+    depends_on:
+      backend:
+        condition: service_started
+    networks:
+      - backend
+
+
+volumes:
+  pgdata:
+
+networks:
+  backend:
+    driver: bridge

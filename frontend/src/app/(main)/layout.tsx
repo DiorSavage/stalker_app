@@ -8,7 +8,7 @@ export default function MainLayout({
   return (
     <>
       <Header />
-			<main className='w-full min-h-screen flex flex-col'>
+			<main className='w-full flex flex-col items-center min-h-[90vh]'>
 				{children}
 			</main>
 		</>
