@@ -19,7 +19,7 @@ class RedisSettings(BaseModel):
 
 class Settings(BaseModel):
 	DB_URL: str = "postgresql+asyncpg://postgres:postgres@db:5432/stalkappdb"
-	# DB_URL: str = "postgresql+asyncpg://postgres:postgres@0.0.0.0:5432/stalkappdb"
+	# DB_URL: str = "postgresql+asyncpg://postgres:archblack@0.0.0.0:5432/stalkappdb"
 	DB_ECHO: bool = True
 	UPLOAD_DIR: str = "/stalk_app/uploads/"
 

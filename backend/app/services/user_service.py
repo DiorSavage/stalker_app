@@ -41,9 +41,9 @@ class IUserService:
 
 class UserService(IUserService):
 	def __init__(
-			self,
-			jwt_service: JwtService = JwtService(),
-			token_service: TokenService = TokenService()
+		self,
+		jwt_service: JwtService = JwtService(),
+		token_service: TokenService = TokenService()
 	):
 		self.jwt_service: JwtService = jwt_service
 		self.token_service: TokenService = token_service

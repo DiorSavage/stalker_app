@@ -107,7 +107,7 @@ async def add_friend_endpoint(
 				"message": f"New friend with id: {new_friendship_data.friend_id} not found"
 			}
 		)
-	
+	print(user.id, new_friend.id)
 	success = await user_service.add_friend(session=session, user=user, new_friend=new_friend)
 	if not success:
 		raise HTTPException(
@@ -131,7 +131,7 @@ async def get_friends_endpoint(
 	if user_id:
 		user = await user_service.get_user_model(user_id=user_id, session=session)
 	else:
-		user_id = 27 #? из куков
+		user_id = 2 #? из куков
 		user = await user_service.get_user_model(user_id=user_id, session=session)
 
 	friends = await user_service.get_friends(session=session, user=user)
