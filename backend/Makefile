@@ -1,26 +1,30 @@
-stop_services:
-	systemctl stop postgresql.service
-	systemctl stop redis-server.service
+DC = docker-compose
+EXEC = docker exec -it
+LOGS = docker logs
+ENV = --env-file .env
+APP_FILE = ./docker_compose/app.yaml
+APP_CONTAINER = stalker_main_app
+DB_CONTAINER = stalker_db
+DB_USER = appuser
+DB_PASSWORD = archblack
+DB_NAME = 
 
-clean:
-	docker rmi local_stalk_app_backend:latest || true
+.PHONY: app
+app:
+	${DC} -f ${APP_FILE} ${ENV} up --build -d
 
-build:
-	docker-compose build
+.PHONY: app-logs
+app-logs:
+	${LOGS} ${APP_CONTAINER} -f
 
-up:
-	docker-compose up
+.PHONY: app-down
+app-down:
+	${DC} -f ${APP_FILE} down
 
-rs:
-	docker exec -it local_stalk_app_redis redis-cli
+.PHONY: app-db
+app-db:
+	${EXEC} ${DB_CONTAINER} mysql --user=appuser --password=archblack stalkdb_ddd
 
-pg:
-	docker exec -it local_stalk_app_postgres psql -U postgres
-
-prune:
-	docker system prune -f
-	docker volume prune -f
-	docker network prune -f
-	docker-compose down
-
-all: stop_services prune clean build up
+.PHONY: app-exec
+app-exec:
+	${EXEC} ${APP_CONTAINER} sh

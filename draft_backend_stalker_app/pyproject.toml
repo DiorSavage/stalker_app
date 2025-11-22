@@ -1,0 +1,24 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Your Name",email = "you@example.com"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi[all] (>=0.121.2,<0.122.0)",
+    "sqlalchemy (>=2.0.44,<3.0.0)",
+    "faststream (>=0.6.3,<0.7.0)",
+    "redis (>=7.0.1,<8.0.0)",
+    "pydantic (>=2.12.4,<3.0.0)",
+    "alembic (>=1.17.2,<2.0.0)",
+    "pytest (>=9.0.1,<10.0.0)",
+    "httpx (>=0.28.1,<0.29.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

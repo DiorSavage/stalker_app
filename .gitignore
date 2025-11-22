@@ -1,4 +1,3 @@
-/certs
+/certs/
 /__pycache__/
-/pgdata
-/venv
+backend/docker_compose/mysql_data/

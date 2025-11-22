@@ -1,4 +1,3 @@
-/certs
+.env
 /__pycache__/
-/pgdata
-/venv
+/mysql_data/

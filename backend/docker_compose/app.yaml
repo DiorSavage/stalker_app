@@ -1,0 +1,64 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: stalker_db
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=stalkdb_ddd
+      - MYSQL_USER=appuser
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+      interval: 5s
+      start_period: 10s
+    # networks:
+    #   - backend_network
+
+  main-app:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: stalker_main_app
+    ports:
+      - "${API_PORT}:8000"
+    command: bash -c "alembic upgrade head && uvicorn --factory presentation.api.main:create_app --reload --host 0.0.0.0 --port 8000"
+    env_file:
+      - ../.env
+    volumes:
+      - ../:/stalker_app/
+    # networks:
+    #   - backend_network
+    depends_on:
+      db:
+        condition: service_healthy
+      # redis:
+      #   condition: service_started
+      # rabbitmq:
+      #   condition: service_healthy
+
+  # rabbitmq:
+  #   image: rabbitmq:4.1.0-management
+  #   hostname: rabbitmq
+  #   container_name: local_stalk_app_rabbitmq
+  #   ports:
+  #     - "5672:5672"
+  #     - "15672:15672"
+  #   healthcheck:
+  #     test: ["CMD", "rabbitmqctl", "status"]
+  #     interval: 3s
+  #     timeout: 5s
+  #     retries: 10
+  #   environment:
+  #     - RABBITMQ_DEFAULT_USER=guest
+  #     - RABBITMQ_DEFAULT_PASS=guest
+
+# networks:
+#   backend_network:
+#     driver: bridge
