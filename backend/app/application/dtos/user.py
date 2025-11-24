@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from typing import final, Optional
 from datetime import datetime
-from uuid import UUID
 
 @final
 @dataclass(
@@ -10,7 +9,7 @@ from uuid import UUID
 	slots=True
 )
 class UserDTO:
-	id: Optional[UUID] = None
+	id: Optional[str] = None
 	email: str
 	username: str
 	firstname: Optional[str] = None

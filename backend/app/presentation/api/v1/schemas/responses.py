@@ -3,7 +3,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 from uuid import UUID
 from enum import StrEnum
-from typing import List
+from typing import List, Optional
 
 class SubscriptionEnum(StrEnum):
 	free = "free"
@@ -13,11 +13,16 @@ class UserBase(BaseModel):
 	email: str
 	username: str
 
+class PostBase(BaseModel):
+	title: str
+	content: str
+	author_id: str
+
 class UserCreateRequest(UserBase):
 	password: str
 
 class UserResponse(UserBase):
-	id: UUID
+	id: str
 	firstname: str | None = None
 	lastname: str | None = None
 	birthday: datetime | None = None
@@ -54,3 +59,50 @@ class UserResponseWithFriends(UserResponse):
 class AddFriendRequest(BaseModel):
 	user_id: int
 	friend_id: int
+
+class PostImageResponse(BaseModel):
+	id: str
+	post_id: str
+	image_url: str
+	created_at: datetime
+	latitude: Optional[float] = None
+	longitude: Optional[float] = None
+
+	@field_serializer("created_at")
+	def parse_datetime(self, value):
+		if not isinstance(value, str) and value is not None:
+			return value.isoformat()
+
+		return value
+
+	def model_dump(self, timezone: str = "Europe/Moscow", **kwargs):
+		data = super().model_dump(**kwargs)
+		tz = ZoneInfo(timezone)
+		data["created_at"] = datetime.fromisoformat(data["created_at"]).astimezone(tz).isoformat()
+
+		return data
+
+class PostResponse(PostBase):
+	id: str
+	updated_at: datetime
+	created_at: datetime
+
+	author: UserResponse
+	images: List[PostImageResponse] = None
+
+	@field_serializer("created_at", "updated_at")
+	def parse_datetime(self, value):
+		if not isinstance(value, str) and value is not None:
+			return value.isoformat()
+
+		return value
+
+	def model_dump(self, timezone: str = "Europe/Moscow", **kwargs):
+		data = super().model_dump(**kwargs)
+		tz = ZoneInfo(timezone)
+		data["created_at"] = datetime.fromisoformat(data["created_at"]).astimezone(tz).isoformat()
+		data["updated_at"] = datetime.fromisoformat(data["updated_at"]).astimezone(tz).isoformat()
+
+		return data
+	
+	# author: UserResponse

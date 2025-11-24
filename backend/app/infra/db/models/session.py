@@ -18,7 +18,6 @@ load_dotenv()
 class DatabaseHelper:
 	engine: AsyncEngine = create_async_engine(
 		url=os.environ.get("MYSQL_URL"),
-		# url="mysql+aiomysql://appuser:archblack@db:3306/stalkdb_ddd",
 		echo=True
 	)
 	session_factory: async_sessionmaker[AsyncSession] = async_sessionmaker(

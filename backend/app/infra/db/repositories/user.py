@@ -42,3 +42,12 @@ class MySQLUserRepository(UserRepository):
 			)
 
 		return None
+
+	async def get_user_by_id(self, user_id: str):
+		orm_user = await self.session.scalar(select(UserORM).where(UserORM.id == user_id))
+		if orm_user:
+			return self.mapper.to_entity(
+				model=orm_user
+			)
+
+		return None
