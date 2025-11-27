@@ -5,7 +5,7 @@ from presentation.api.v1.schemas.requests import UserCreateSchema
 from presentation.api.v1.mappers.user_mapper import UserResponseMapper
 from application.use_cases.save_user_repo import SaveUser
 
-from infra.di import get_register_user_use_case
+from presentation.di import get_register_user_use_case
 
 router = APIRouter(
 	prefix="/v1/users",

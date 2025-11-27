@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from uuid import UUID
 
 from domain.entities.user import User
-from domain.entities.post import Post
+from domain.entities.post import Post, PostComment
 
 class UserRepository(ABC):
 	@abstractmethod
@@ -25,4 +25,10 @@ class PostRepository(ABC):
 
 	@abstractmethod
 	async def get_post_by_id(self, post_id: str) -> Post:
+		...
+
+class CommentRepository(ABC):
+
+	@abstractmethod
+	async def create_comment(self, commentData: PostComment) -> PostComment:
 		...

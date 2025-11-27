@@ -81,14 +81,38 @@ class PostImageResponse(BaseModel):
 		data["created_at"] = datetime.fromisoformat(data["created_at"]).astimezone(tz).isoformat()
 
 		return data
-
-class PostResponse(PostBase):
+	
+class CommentImage(BaseModel):
 	id: str
+	comment_id: str
+	image_url: str
+	created_at: datetime
+
+	@field_serializer("created_at")
+	def parse_datetime(self, value):
+		if not isinstance(value, str) and value is not None:
+			return value.isoformat()
+
+		return value
+
+	def model_dump(self, timezone: str = "Europe/Moscow", **kwargs):
+		data = super().model_dump(**kwargs)
+		tz = ZoneInfo(timezone)
+		data["created_at"] = datetime.fromisoformat(data["created_at"]).astimezone(tz).isoformat()
+
+		return data
+
+class PostComment(BaseModel):
+	id: str
+	user_id: str
+	post_id: str
+	content: Optional[str] = None
+
 	updated_at: datetime
 	created_at: datetime
 
-	author: UserResponse
-	images: List[PostImageResponse] = None
+	images: Optional[List[CommentImage]] = []
+	# author: UserResponse
 
 	@field_serializer("created_at", "updated_at")
 	def parse_datetime(self, value):
@@ -104,5 +128,30 @@ class PostResponse(PostBase):
 		data["updated_at"] = datetime.fromisoformat(data["updated_at"]).astimezone(tz).isoformat()
 
 		return data
-	
-	# author: UserResponse
+
+
+class PostResponse(PostBase):
+	id: str
+	updated_at: datetime
+	created_at: datetime
+
+	author: UserResponse
+	images: List[PostImageResponse] = []
+
+	@field_serializer("created_at", "updated_at")
+	def parse_datetime(self, value):
+		if not isinstance(value, str) and value is not None:
+			return value.isoformat()
+
+		return value
+
+	def model_dump(self, timezone: str = "Europe/Moscow", **kwargs):
+		data = super().model_dump(**kwargs)
+		tz = ZoneInfo(timezone)
+		data["created_at"] = datetime.fromisoformat(data["created_at"]).astimezone(tz).isoformat()
+		data["updated_at"] = datetime.fromisoformat(data["updated_at"]).astimezone(tz).isoformat()
+
+		return data
+
+class DetailPostResponse(PostResponse):
+	comments: List[PostComment] = []

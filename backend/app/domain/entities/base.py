@@ -8,8 +8,8 @@ from uuid import uuid4, UUID
 	kw_only=True,
 )
 class BaseEntity(ABC):
-	id: UUID = field(
-		default_factory=uuid4,
+	id: str = field(
+		default_factory=lambda: str(uuid4()),
 	)
 	created_at: datetime = field(
 		default_factory=lambda: datetime.now(UTC)

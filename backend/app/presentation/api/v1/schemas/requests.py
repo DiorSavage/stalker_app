@@ -23,3 +23,11 @@ class PostCreateSchema(BaseModel):
 	author_id: str
 
 	images: Optional[List[PostImageCreateSchema]] = None
+
+class CommentImageCreateSchema(BaseModel):
+	image_url: str
+
+class PostCommentCreateSchema(BaseModel):
+	post_id: str
+	content: Optional[str] = None
+	images: Optional[List[CommentImageCreateSchema]] = None

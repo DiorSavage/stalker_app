@@ -37,7 +37,7 @@ class Base(DeclarativeBase):
 class FriendsList(Base):
 	__tablename__ = "friends_list"
 
-	id: Mapped[str] = mapped_column(String(36), primary_key=True, index=True, unique=True, default=uuid.uuid4)
+	id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
 
 
 	user_id: Mapped[str] = mapped_column(String(36), ForeignKey("users.id"))
@@ -123,7 +123,7 @@ class User(Base):
 class FriendsRequests(Base):
 	__tablename__ = "friends_requests"
 
-	id: Mapped[str] = mapped_column(String(36), primary_key=True, index=True, unique=True, default=uuid.uuid4)
+	id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
 
 
 	user_id: Mapped[str] = mapped_column(String(36), ForeignKey("users.id"), index=True)
@@ -151,7 +151,7 @@ class Token(Base):
 class BanList(Base):
 	__tablename__ = "ban_list"
 
-	id: Mapped[str] = mapped_column(String(36), primary_key=True, index=True, unique=True, default=uuid.uuid4)
+	id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
 
 	user_id: Mapped[str] = mapped_column(String(36), ForeignKey("users.id"), nullable=False, index=True)
 	admin_id: Mapped[str] = mapped_column(String(36), ForeignKey("users.id"), index=True, nullable=False)
@@ -179,7 +179,7 @@ class Post(Base):
 class PostImage(Base):
 	__tablename__ = "post_images"
 
-	id: Mapped[str] = mapped_column(String(36), primary_key=True, index=True, unique=True, default=uuid.uuid4)
+	id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
 
 	post_id: Mapped[str] = mapped_column(String(36), ForeignKey("posts.id"), nullable=False, index=True)
 	image_url: Mapped[str] = mapped_column(String(500), nullable=False)
@@ -193,7 +193,7 @@ class PostImage(Base):
 class PostComment(Base):
 	__tablename__ = "post_comments"
 
-	id: Mapped[str] = mapped_column(String(36), primary_key=True, index=True, unique=True, default=uuid.uuid4)
+	id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
 
 	user_id: Mapped[str] = mapped_column(String(36), ForeignKey("users.id"), nullable=False, index=True)
 	post_id: Mapped[str] = mapped_column(String(36), ForeignKey("posts.id"), index=True, nullable=False)
@@ -218,7 +218,7 @@ class PostComment(Base):
 class CommentImage(Base):
 	__tablename__ = "comment_images"
 
-	id: Mapped[str] = mapped_column(String(36), primary_key=True, index=True, unique=True, default=uuid.uuid4)
+	id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
 
 	comment_id: Mapped[str] = mapped_column(String(36), ForeignKey("post_comments.id"), nullable=False, index=True)
 	image_url: Mapped[str] = mapped_column(String(500), nullable=False)

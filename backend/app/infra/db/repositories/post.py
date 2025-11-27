@@ -2,10 +2,10 @@ from dataclasses import dataclass
 from typing import final
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, or_, Result
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, selectinload
 
 from application.interfaces.repositories import PostRepository
-from infra.db.models.models import Post as PostORM, PostImage as PostImageORM
+from infra.db.models.models import Post as PostORM, PostComment as PostCommentORM
 from domain.entities.post import Post
 from infra.db.mappers.post import PostDBMapper
 
@@ -23,17 +23,11 @@ class MySQLPostRepository(PostRepository):
 			title=post.title
 		)
 		self.session.add(new_post_model)
-		await self.session.commit()
+		await self.session.flush()
 
 		if post.images:
 			new_images = [
-				PostImageORM(
-					id=image.id,
-					latitude=image.latitude,
-					longitude=image.longitude,
-					post_id=new_post_model.id,
-					image_url=image.image_url
-				)
+				self.mapper.image_to_orm(post_image=image, post_id=new_post_model.id)
 				for image in post.images
 			]
 			self.session.add_all(new_images)
@@ -46,7 +40,7 @@ class MySQLPostRepository(PostRepository):
 		)
 	
 	async def get_post_by_id(self, post_id: str) -> Post:
-		post_model = await self.session.scalar(select(PostORM).where(PostORM.id == post_id).options(joinedload(PostORM.images)))
+		post_model = await self.session.scalar(select(PostORM).where(PostORM.id == post_id).options(joinedload(PostORM.images), joinedload(PostORM.comments).joinedload(PostCommentORM.images)))
 		if post_model:
 			return self.mapper.to_entity(
 				model=post_model

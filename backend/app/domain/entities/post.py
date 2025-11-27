@@ -35,11 +35,13 @@ class PostImage(BaseEntity):
 	kw_only=True
 )
 class PostComment(BaseEntity):
-	user_id: int
-	post_id: int
+	user_id: str
+	post_id: str
 	content: Optional[str] = None
 	updated_at: datetime = None
-	images: Optional[list[CommentImage]] = None
+	images: list[CommentImage] = field(
+		default_factory=lambda: list
+	)
 
 	def validate(self) -> bool:
 		if len(self.images) == 0 and not self.content:
@@ -61,8 +63,12 @@ class Post(BaseEntity):
 	content: Optional[str] = None
 	updated_at: datetime = None
 
-	images: Optional[list[PostImage]] = None
-	comments: Optional[list[PostComment]] = None
+	images: list[PostImage] = field(
+		default_factory=lambda: list
+	)
+	comments: list[PostComment] = field(
+		default_factory=lambda: list
+	)
 
 	def validate(self) -> bool:
 		if len(self.images) == 0 and not self.content:
