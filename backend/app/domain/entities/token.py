@@ -15,5 +15,5 @@ class Token(BaseEntity):
 	user_id: int
 	token: str
 	updated_at: Optional[datetime] = None
+	created_at: Optional[datetime] = None
 	expire_at: datetime = None
-	user: User

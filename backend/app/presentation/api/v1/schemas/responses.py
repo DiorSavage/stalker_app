@@ -43,10 +43,12 @@ class UserResponse(UserBase):
 
 	def model_dump(self, timezone: str = "Europe/Moscow", **kwargs):
 		data = super().model_dump(**kwargs)
+		print(data)
 		tz = ZoneInfo(timezone)
 		data["created_at"] = datetime.fromisoformat(data["created_at"]).astimezone(tz).isoformat()
 		if data["birthday"]:
-			data["birthday"] = datetime.fromisoformat(data["birthday"]).astimezone(tz).isoformat()
+			data["birthday"] = data["birthday"].astimezone(tz).isoformat()
+			# data["birthday"] = datetime.fromisoformat(data["birthday"]).astimezone(tz).isoformat()
 		if data["subscription_expired_at"]:
 			data["subscription_expired_at"] = datetime.fromisoformat(data["subscription_expired_at"]).astimezone(tz).isoformat()
 
@@ -112,7 +114,7 @@ class PostComment(BaseModel):
 	created_at: datetime
 
 	images: Optional[List[CommentImage]] = []
-	# author: UserResponse
+	author: UserResponse
 
 	@field_serializer("created_at", "updated_at")
 	def parse_datetime(self, value):

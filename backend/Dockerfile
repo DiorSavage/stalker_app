@@ -8,6 +8,7 @@ RUN apt update -y && \
     musl-dev
 
 COPY . .
+COPY certs/ /stalker_app/certs
 
 RUN pip install --upgrade pip
 RUN pip install poetry

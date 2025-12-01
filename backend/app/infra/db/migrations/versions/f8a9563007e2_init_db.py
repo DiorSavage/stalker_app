@@ -1,18 +1,18 @@
-"""update id
+"""init db
 
-Revision ID: 0de95588b1dc
+Revision ID: f8a9563007e2
 Revises: 
-Create Date: 2025-11-27 11:35:22.604013
+Create Date: 2025-12-01 19:00:41.608123
 
 """
 from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
-
+from sqlalchemy.dialects import mysql
 
 # revision identifiers, used by Alembic.
-revision: str = '0de95588b1dc'
+revision: str = 'f8a9563007e2'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -89,7 +89,7 @@ def upgrade() -> None:
     op.create_index(op.f('ix_posts_user_id'), 'posts', ['user_id'], unique=False)
     op.create_table('tokens',
     sa.Column('user_id', sa.String(length=36), nullable=False),
-    sa.Column('token', sa.String(length=400), nullable=False),
+    sa.Column('token', mysql.LONGTEXT(), nullable=False),
     sa.Column('created_at', sa.DATETIME(timezone=True), server_default=sa.text('now()'), nullable=False),
     sa.Column('updated_at', sa.DATETIME(timezone=True), server_default=sa.text('now()'), nullable=False),
     sa.Column('expire_at', sa.DATETIME(timezone=True), server_default=sa.text('now()'), nullable=False),
@@ -97,7 +97,6 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_tokens_token'), 'tokens', ['token'], unique=False)
     op.create_index(op.f('ix_tokens_user_id'), 'tokens', ['user_id'], unique=False)
     op.create_table('post_comments',
     sa.Column('id', sa.String(length=36), nullable=False),
@@ -145,7 +144,6 @@ def downgrade() -> None:
     op.drop_index(op.f('ix_post_comments_post_id'), table_name='post_comments')
     op.drop_table('post_comments')
     op.drop_index(op.f('ix_tokens_user_id'), table_name='tokens')
-    op.drop_index(op.f('ix_tokens_token'), table_name='tokens')
     op.drop_table('tokens')
     op.drop_index(op.f('ix_posts_user_id'), table_name='posts')
     op.drop_table('posts')

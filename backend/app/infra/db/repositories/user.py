@@ -51,3 +51,12 @@ class MySQLUserRepository(UserRepository):
 			)
 
 		return None
+	
+	async def get_users_by_id(self, user_ids: list[str]) -> list[User]:
+		orm_users = await self.session.scalars(select(UserORM).where(UserORM.id.in_(user_ids)))
+		if orm_users:
+			user_entities = [self.mapper.to_entity(
+				model=orm_user
+			) for orm_user in orm_users]
+
+			return user_entities

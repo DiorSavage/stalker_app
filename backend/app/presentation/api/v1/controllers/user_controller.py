@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Path, Depends, Response, status
+from fastapi.responses import JSONResponse
 
 from presentation.api.v1.schemas.responses import UserResponse
 from presentation.api.v1.schemas.requests import UserCreateSchema
@@ -29,10 +30,24 @@ async def register_user(
 	mapper: UserResponseMapper = Depends(UserResponseMapper),
 	use_case: SaveUser = Depends(get_register_user_use_case),
 ):
-	user_dto = await use_case(user_dto=mapper.to_dto(schema=schema))
+	user_dto, token, expire_at = await use_case(user_dto=mapper.to_dto(schema=schema))
 	if user_dto is None:
 		return Response(
 			content="user_dto is None",
 			status_code=500
 		)
-	return mapper.to_response(dto=user_dto)
+	response_data = mapper.to_response(dto=user_dto)
+	response = JSONResponse(
+		content=response_data.model_dump(),
+		status_code=status.HTTP_201_CREATED
+	)
+	response.set_cookie(
+		key="stalktoken",
+		value=token,
+		samesite="none",
+		secure=True,
+		httponly=True,
+		expires=int(expire_at/1000)
+	)
+
+	return response

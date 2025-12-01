@@ -68,7 +68,10 @@ class DetailPostResponseMapper:
 				comment_images = []
 				if comment.images:
 					comment_images = [CommentImage(id=image.id, created_at=image.created_at, comment_id=comment.id, image_url=image.image_url) for image in comment.images]
-				comments.append(PostComment(id=comment.id, created_at=comment.created_at, user_id=comment.user_id, post_id=post_dto.id, content=comment.content, updated_at=comment.updated_at, images=comment_images))
+				comment_author_schema = self.user_db_mapper.to_response(
+					dto=comment.author
+				)
+				comments.append(PostComment(id=comment.id, created_at=comment.created_at, user_id=comment.user_id, post_id=post_dto.id, content=comment.content, updated_at=comment.updated_at, images=comment_images, author=comment_author_schema))
 		
 		user_schema = self.user_db_mapper.to_response(dto=post_dto.author)
 		return DetailPostResponse(

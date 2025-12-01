@@ -40,7 +40,7 @@ class MySQLPostRepository(PostRepository):
 		)
 	
 	async def get_post_by_id(self, post_id: str) -> Post:
-		post_model = await self.session.scalar(select(PostORM).where(PostORM.id == post_id).options(joinedload(PostORM.images), joinedload(PostORM.comments).joinedload(PostCommentORM.images)))
+		post_model = await self.session.scalar(select(PostORM).where(PostORM.id == post_id).options(selectinload(PostORM.images), selectinload(PostORM.comments).selectinload(PostCommentORM.images), selectinload(PostORM.comments).joinedload(PostCommentORM.author)))
 		if post_model:
 			return self.mapper.to_entity(
 				model=post_model

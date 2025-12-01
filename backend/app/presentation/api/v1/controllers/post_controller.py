@@ -62,7 +62,7 @@ async def get_post(
 	result = await use_case(post_id=post_id)
 	if result:
 		response = mapper.to_response(
-			post_dto=result
+			post_dto=result,
 		)
 
 		return response
@@ -88,12 +88,12 @@ async def create_comment(
 ):
 	new_comment_dto = mapper.to_dto(
 		schema=new_comment,
-		user_id="7e03811c-3ee1-4bd8-9e90-5384641084f4" #? из jwt токена
+		user_id="b79f60c4-5c1a-4f9c-ac9f-00fabf4b05b0" #? из jwt токена
 	)
 	result = await use_case(comment_data=new_comment_dto)
 	if result:
 		response = mapper.to_response(
-			comment_dto=result
+			comment_dto=result,
 		)
 
 		return response

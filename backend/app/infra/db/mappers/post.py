@@ -127,7 +127,8 @@ class PostDTOEntityMapper(DtoPostEntityMapper):
 class DetailPostDTOEntityMapper(DtoPostEntityMapper):
 	user_mapper: DtoUserEntityMapper
 	
-	def to_dto(self, post_entity: PostEntity, author_entity: UserEntity) -> PostDetailDTO:
+	def to_dto(self, post_entity: PostEntity, author_entity: UserEntity, comments_authors: dict[str, UserEntity]) -> PostDetailDTO:
+	# def to_dto(self, post_entity: PostEntity, author_entity: UserEntity, comments_author_entity: list[UserEntity]) -> PostDetailDTO:
 		images = []
 		comments = []
 		if post_entity.images:
@@ -138,6 +139,7 @@ class DetailPostDTOEntityMapper(DtoPostEntityMapper):
 				comment_images = []
 				if comment.images:
 					comment_images = [CommentImageDTO(id=image.id, comment_id=comment.id, image_url=image.image_url, created_at=image.created_at) for image in comment.images]
+				comment_author = self.user_mapper.to_dto(entity=comments_authors[comment.user_id])
 				comment = PostCommentDTO(
 					content=comment.content,
 					id=comment.id,
@@ -145,6 +147,7 @@ class DetailPostDTOEntityMapper(DtoPostEntityMapper):
 					post_id=post_entity.id,
 					updated_at=comment.updated_at,
 					user_id=comment.user_id,
+					author=comment_author,
 					created_at=comment.created_at,
 				)
 				comments.append(comment)

@@ -1,5 +1,6 @@
 from sqlalchemy.orm import DeclarativeBase, declared_attr, mapped_column, Mapped, relationship, object_session
 from sqlalchemy import Column, Integer, String, DateTime, DATETIME, func, Enum, ForeignKey, Boolean, Table, CheckConstraint, Index, select, or_, UniqueConstraint, Float
+from sqlalchemy.dialects.mysql import LONGTEXT
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.ext.asyncio import AsyncSession, async_object_session
 from sqlalchemy.exc import IntegrityError
@@ -140,7 +141,7 @@ class FriendsRequests(Base):
 
 class Token(Base):
 	user_id: Mapped[str] = mapped_column(String(36), ForeignKey("users.id"), index=True)
-	token: Mapped[str] = mapped_column(String(400), index=True)
+	token: Mapped[str] = mapped_column(LONGTEXT)
 	created_at: Mapped[datetime] = mapped_column(DATETIME(timezone=True), server_default=func.now(), default=datetime.now, nullable=False)
 	updated_at: Mapped[datetime] = mapped_column(DATETIME(timezone=True), server_default=func.now(), default=datetime.now, nullable=False, server_onupdate=func.now())
 	expire_at: Mapped[datetime] = mapped_column(DATETIME(timezone=True), server_default=func.now(), default=datetime.now, nullable=False)

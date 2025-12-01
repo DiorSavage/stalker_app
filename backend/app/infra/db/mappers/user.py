@@ -88,3 +88,10 @@ class UserDTOEntityMapper(DtoUserEntityMapper):
 			avatar=dto.avatar,
 			created_at=dto.created_at,
 		)
+	
+	def to_jwt_dict(self, dto: UserDTO) -> dict:
+		return {
+			"sub": dto.id,
+			"is_admin": dto.is_admin,
+			"is_banned": dto.is_banned
+		}
